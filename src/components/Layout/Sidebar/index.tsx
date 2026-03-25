@@ -2,6 +2,7 @@ import Badge from '@app/components/Common/Badge';
 import UserWarnings from '@app/components/Layout/UserWarnings';
 import VersionStatus from '@app/components/Layout/VersionStatus';
 import useClickOutside from '@app/hooks/useClickOutside';
+import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import defineMessages from '@app/utils/defineMessages';
 import { Transition } from '@headlessui/react';
@@ -16,6 +17,7 @@ import {
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
+import { FaceSmileIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -26,6 +28,7 @@ export const menuMessages = defineMessages('components.Layout.Sidebar', {
   dashboard: 'Discover',
   browsemovies: 'Movies',
   browsetv: 'Series',
+  standupcomedy: 'Stand-Up Comedy',
   requests: 'Requests',
   blocklist: 'Blocklist',
   issues: 'Issues',
@@ -51,6 +54,7 @@ interface SidebarLinkProps {
   requiredPermission?: Permission | Permission[];
   permissionType?: 'and' | 'or';
   dataTestId?: string;
+  requiresSetting?: 'showStandupComedy';
 }
 
 const SidebarLinks: SidebarLinkProps[] = [
@@ -71,6 +75,13 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'browsetv',
     svgIcon: <TvIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/discover\/tv$/,
+  },
+  {
+    href: '/discover/standup',
+    messagesKey: 'standupcomedy',
+    svgIcon: <FaceSmileIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/discover\/standup$/,
+    requiresSetting: 'showStandupComedy',
   },
   {
     href: '/requests',
@@ -130,8 +141,27 @@ const Sidebar = ({
   const navRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const intl = useIntl();
+  const settings = useSettings();
   const { hasPermission } = useUser();
   useClickOutside(navRef, () => setClosed());
+
+  const isLinkVisible = (link: SidebarLinkProps) => {
+    // Check permissions
+    if (link.requiredPermission) {
+      if (!hasPermission(link.requiredPermission, { type: link.permissionType ?? 'and' })) {
+        return false;
+      }
+    }
+    
+    // Check settings requirements
+    if (link.requiresSetting) {
+      if (!settings.currentSettings[link.requiresSetting]) {
+        return false;
+      }
+    }
+    
+    return true;
+  };
 
   useEffect(() => {
     if (openIssuesCount) {
@@ -198,13 +228,7 @@ const Sidebar = ({
                       </span>
                     </div>
                     <nav className="mt-10 flex-1 space-y-4 px-4">
-                      {SidebarLinks.filter((link) =>
-                        link.requiredPermission
-                          ? hasPermission(link.requiredPermission, {
-                              type: link.permissionType ?? 'and',
-                            })
-                          : true
-                      ).map((sidebarLink) => {
+                      {SidebarLinks.filter((link) => isLinkVisible(link)).map((sidebarLink) => {
                         return (
                           <Link
                             key={`mobile-${sidebarLink.messagesKey}`}
@@ -265,13 +289,7 @@ const Sidebar = ({
                 </span>
               </div>
               <nav className="mt-8 flex-1 space-y-4 px-4">
-                {SidebarLinks.filter((link) =>
-                  link.requiredPermission
-                    ? hasPermission(link.requiredPermission, {
-                        type: link.permissionType ?? 'and',
-                      })
-                    : true
-                ).map((sidebarLink) => {
+                {SidebarLinks.filter((link) => isLinkVisible(link)).map((sidebarLink) => {
                   return (
                     <Link
                       key={`desktop-${sidebarLink.messagesKey}`}

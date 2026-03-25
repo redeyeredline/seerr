@@ -1,6 +1,7 @@
 import Badge from '@app/components/Common/Badge';
 import { menuMessages } from '@app/components/Layout/Sidebar';
 import useClickOutside from '@app/hooks/useClickOutside';
+import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import { Transition } from '@headlessui/react';
 import {
@@ -19,12 +20,14 @@ import {
   CogIcon as FilledCogIcon,
   ExclamationTriangleIcon as FilledExclamationTriangleIcon,
   EyeSlashIcon as FilledEyeSlashIcon,
+  FaceSmileIcon as FilledFaceSmileIcon,
   FilmIcon as FilledFilmIcon,
   SparklesIcon as FilledSparklesIcon,
   TvIcon as FilledTvIcon,
   UsersIcon as FilledUsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
+import { FaceSmileIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { cloneElement, useEffect, useRef, useState } from 'react';
@@ -47,6 +50,7 @@ interface MenuLink {
   requiredPermission?: Permission | Permission[];
   permissionType?: 'and' | 'or';
   dataTestId?: string;
+  requiresSetting?: 'showStandupComedy';
 }
 
 const MobileMenu = ({
@@ -57,6 +61,7 @@ const MobileMenu = ({
 }: MobileMenuProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const intl = useIntl();
+  const settings = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const { hasPermission } = useUser();
   const router = useRouter();
@@ -69,6 +74,20 @@ const MobileMenu = ({
   });
 
   const toggle = () => setIsOpen(!isOpen);
+
+  const isLinkVisible = (link: MenuLink) => {
+    if (link.requiredPermission) {
+      if (!hasPermission(link.requiredPermission, { type: link.permissionType ?? 'and' })) {
+        return false;
+      }
+    }
+    if (link.requiresSetting) {
+      if (!settings.currentSettings[link.requiresSetting]) {
+        return false;
+      }
+    }
+    return true;
+  };
 
   const menuLinks: MenuLink[] = [
     {
@@ -91,6 +110,14 @@ const MobileMenu = ({
       svgIcon: <TvIcon className="h-6 w-6" />,
       svgIconSelected: <FilledTvIcon className="h-6 w-6" />,
       activeRegExp: /^\/discover\/tv$/,
+    },
+    {
+      href: '/discover/standup',
+      content: intl.formatMessage(menuMessages.standupcomedy),
+      svgIcon: <FaceSmileIcon className="h-6 w-6" />,
+      svgIconSelected: <FilledFaceSmileIcon className="h-6 w-6" />,
+      activeRegExp: /^\/discover\/standup$/,
+      requiresSetting: 'showStandupComedy',
     },
     {
       href: '/requests',
@@ -144,13 +171,7 @@ const MobileMenu = ({
     },
   ];
 
-  const filteredLinks = menuLinks.filter(
-    (link) =>
-      !link.requiredPermission ||
-      hasPermission(link.requiredPermission, {
-        type: link.permissionType ?? 'and',
-      })
-  );
+  const filteredLinks = menuLinks.filter((link) => isLinkVisible(link));
 
   useEffect(() => {
     if (openIssuesCount) {

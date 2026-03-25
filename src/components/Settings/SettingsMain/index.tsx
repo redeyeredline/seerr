@@ -56,6 +56,12 @@ const messages = defineMessages('components.Settings.SettingsMain', {
   hideAvailable: 'Hide Available Media',
   hideAvailableTip:
     'Hide available media from the discover pages but not search results',
+  hideOwnedDetail: 'Hide Owned Content on Detail Pages',
+  hideOwnedDetailTip:
+    'Hide owned media sections (Recommendations, Similar, etc.) on movie and TV show detail pages',
+  showStandupComedy: 'Show Stand-Up Comedy Section',
+  showStandupComedyTip:
+    'Display a dedicated stand-up comedy discover section in the interface',
   cacheImages: 'Enable Image Caching',
   cacheImagesTip:
     'Cache externally sourced images (requires a significant amount of disk space)',
@@ -164,7 +170,9 @@ const SettingsMain = () => {
             applicationTitle: data?.applicationTitle,
             applicationUrl: data?.applicationUrl,
             hideAvailable: data?.hideAvailable,
+            hideOwnedDetail: data?.hideOwnedDetail,
             hideBlocklisted: data?.hideBlocklisted,
+            showStandupComedy: data?.showStandupComedy,
             locale: data?.locale ?? 'en',
             discoverRegion: data?.discoverRegion,
             originalLanguage: data?.originalLanguage,
@@ -184,7 +192,9 @@ const SettingsMain = () => {
                 applicationTitle: values.applicationTitle,
                 applicationUrl: values.applicationUrl,
                 hideAvailable: values.hideAvailable,
+                hideOwnedDetail: values.hideOwnedDetail,
                 hideBlocklisted: values.hideBlocklisted,
+                showStandupComedy: values.showStandupComedy,
                 locale: values.locale,
                 discoverRegion: values.discoverRegion,
                 streamingRegion: values.streamingRegion,
@@ -467,6 +477,27 @@ const SettingsMain = () => {
                   </div>
                 </div>
                 <div className="form-row">
+                  <label htmlFor="hideOwnedDetail" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.hideOwnedDetail)}
+                    </span>
+                    <SettingsBadge badgeType="experimental" />
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.hideOwnedDetailTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="hideOwnedDetail"
+                      name="hideOwnedDetail"
+                      onChange={() => {
+                        setFieldValue('hideOwnedDetail', !values.hideOwnedDetail);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
                   <label htmlFor="hideBlocklisted" className="checkbox-label">
                     <span className="mr-2">
                       {intl.formatMessage(messages.hideBlocklisted)}
@@ -485,6 +516,27 @@ const SettingsMain = () => {
                           'hideBlocklisted',
                           !values.hideBlocklisted
                         );
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="showStandupComedy" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.showStandupComedy)}
+                    </span>
+                    <SettingsBadge badgeType="experimental" />
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.showStandupComedyTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="showStandupComedy"
+                      name="showStandupComedy"
+                      onChange={() => {
+                        setFieldValue('showStandupComedy', !values.showStandupComedy);
                       }}
                     />
                   </div>

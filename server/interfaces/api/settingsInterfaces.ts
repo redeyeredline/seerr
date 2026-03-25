@@ -30,7 +30,9 @@ export interface PublicSettingsResponse {
   applicationTitle: string;
   applicationUrl: string;
   hideAvailable: boolean;
+  hideOwnedDetail: boolean;
   hideBlocklisted: boolean;
+  showStandupComedy: boolean;
   localLogin: boolean;
   mediaServerLogin: boolean;
   movie4kEnabled: boolean;

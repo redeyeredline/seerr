@@ -132,7 +132,9 @@ export interface MainSettings {
     tv: Quota;
   };
   hideAvailable: boolean;
+  hideOwnedDetail: boolean;
   hideBlocklisted: boolean;
+  showStandupComedy: boolean;
   localLogin: boolean;
   mediaServerLogin: boolean;
   newPlexLogin: boolean;
@@ -182,7 +184,9 @@ interface FullPublicSettings extends PublicSettings {
   applicationTitle: string;
   applicationUrl: string;
   hideAvailable: boolean;
+  hideOwnedDetail: boolean;
   hideBlocklisted: boolean;
+  showStandupComedy: boolean;
   localLogin: boolean;
   mediaServerLogin: boolean;
   movie4kEnabled: boolean;
@@ -390,7 +394,9 @@ class Settings {
           tv: {},
         },
         hideAvailable: false,
+        hideOwnedDetail: false,
         hideBlocklisted: false,
+        showStandupComedy: false,
         localLogin: true,
         mediaServerLogin: true,
         newPlexLogin: true,
@@ -673,7 +679,9 @@ class Settings {
       applicationTitle: this.data.main.applicationTitle,
       applicationUrl: this.data.main.applicationUrl,
       hideAvailable: this.data.main.hideAvailable,
+      hideOwnedDetail: this.data.main.hideOwnedDetail,
       hideBlocklisted: this.data.main.hideBlocklisted,
+      showStandupComedy: this.data.main.showStandupComedy,
       localLogin: this.data.main.localLogin,
       mediaServerLogin: this.data.main.mediaServerLogin,
       jellyfinExternalHost: this.data.jellyfin.externalHostname,

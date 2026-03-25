@@ -1346,20 +1346,25 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
           />
         </>
       )}
-      <MediaSlider
-        sliderKey="recommendations"
-        title={intl.formatMessage(messages.recommendations)}
-        url={`/api/v1/tv/${router.query.tvId}/recommendations`}
-        linkUrl={`/tv/${data.id}/recommendations`}
-        hideWhenEmpty
-      />
-      <MediaSlider
-        sliderKey="similar"
-        title={intl.formatMessage(messages.similar)}
-        url={`/api/v1/tv/${router.query.tvId}/similar`}
-        linkUrl={`/tv/${data.id}/similar`}
-        hideWhenEmpty
-      />
+      {!settings.currentSettings.hideOwnedDetail ||
+      data.mediaInfo?.status !== MediaStatus.AVAILABLE ? (
+        <>
+          <MediaSlider
+            sliderKey="recommendations"
+            title={intl.formatMessage(messages.recommendations)}
+            url={`/api/v1/tv/${router.query.tvId}/recommendations`}
+            linkUrl={`/tv/${data.id}/recommendations`}
+            hideWhenEmpty
+          />
+          <MediaSlider
+            sliderKey="similar"
+            title={intl.formatMessage(messages.similar)}
+            url={`/api/v1/tv/${router.query.tvId}/similar`}
+            linkUrl={`/tv/${data.id}/similar`}
+            hideWhenEmpty
+          />
+        </>
+      ) : null}
       <div className="extra-bottom-space relative" />
     </div>
   );
