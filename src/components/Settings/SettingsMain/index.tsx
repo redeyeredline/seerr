@@ -136,7 +136,7 @@ const SettingsMain = () => {
         autoDismiss: true,
         appearance: 'success',
       });
-    } catch (e) {
+    } catch {
       addToast(intl.formatMessage(messages.toastApiKeyFailure), {
         autoDismiss: true,
         appearance: 'error',
@@ -221,7 +221,7 @@ const SettingsMain = () => {
                 autoDismiss: true,
                 appearance: 'success',
               });
-            } catch (e) {
+            } catch {
               addToast(intl.formatMessage(messages.toastSettingsFailure), {
                 autoDismiss: true,
                 appearance: 'error',

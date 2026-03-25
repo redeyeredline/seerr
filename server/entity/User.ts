@@ -39,7 +39,16 @@ export class User {
     return users.map((u) => u.filter(showFiltered));
   }
 
-  static readonly filteredFields: string[] = ['email', 'plexId'];
+  static readonly filteredFields: string[] = [
+    'email',
+    'plexId',
+    'password',
+    'resetPasswordGuid',
+    'jellyfinDeviceId',
+    'jellyfinAuthToken',
+    'plexToken',
+    'settings',
+  ];
 
   public displayName: string;
 
@@ -70,7 +79,7 @@ export class User {
   @Column({ nullable: true, select: false })
   public resetPasswordGuid?: string;
 
-  @Column({ type: 'date', nullable: true })
+  @DbAwareColumn({ type: 'datetime', nullable: true })
   public recoveryLinkExpirationDate?: Date | null;
 
   @Column({ type: 'integer', default: UserType.PLEX })
